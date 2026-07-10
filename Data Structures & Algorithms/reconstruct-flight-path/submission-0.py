@@ -1,0 +1,25 @@
+class Solution:
+    def findItinerary(self, tickets: List[List[str]]) -> List[str]:
+        adjlist = defaultdict(list)
+
+        for start, end in tickets:
+            adjlist[start].append([end,0])
+        for key, val in adjlist.items():
+            val.sort()
+
+        out = []
+        
+        def dfs(tickets_left, airport, res):
+            if tickets_left == 0:
+                return res
+            for i, (ap, used) in enumerate(adjlist[airport]):
+                if not used:
+                    adjlist[airport][i][1] = 1
+                    val = dfs(tickets_left-1, ap, res + [ap])
+                    adjlist[airport][i][1] = 0
+                    if val:
+                        return val
+            return None
+        
+        return dfs(len(tickets), 'JFK', ['JFK'])
+        
